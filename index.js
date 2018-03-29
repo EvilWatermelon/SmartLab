@@ -19,7 +19,7 @@ var stuhle = [
     { id: "1", state: 0, position: { x: "400", y: "100" }, user:userList[0]},
     { id: "2", state: 0, position: { x: "100", y: "100" }, user:userList[1] }
 ];
-
+//test
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.get('/lamp/:lampid', function (req, res) {
