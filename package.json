@@ -1,0 +1,18 @@
+{
+  "name": "webserver",
+  "version": "0.0.0",
+  "description": "Webserver for the free parking spot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Albus, Lars Hofschlaeger, Jan Schröder",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "huejay": "^1.8.0",
+    "node-hue-api": "^2.4.2",
+    "nodemon": "^1.17.1",
+    "npm": "^5.7.1"
+  }
+}
