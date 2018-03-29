@@ -51,6 +51,10 @@ app.get('/rfidState/:stuhlId/:position', function (req, res) {
     refreshLamps();
 });
 
+app.post('/lichtsensor', function (req, res) {
+  res.send("test");
+});
+
 app.listen(80, () => console.log('Example app listening on port 80!'));
 
 function refreshLamps() {
