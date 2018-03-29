@@ -9,10 +9,11 @@
   "author": "Patrick Albus, Lars Hofschlaeger, Jan Schröder",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
     "huejay": "^1.8.0",
     "node-hue-api": "^2.4.2",
-    "nodemon": "^1.17.1",
-    "npm": "^5.7.1"
+    "nodemon": "^1.17.2",
+    "npm": "^5.8.0"
   }
 }
