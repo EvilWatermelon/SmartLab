@@ -57,7 +57,7 @@ app.get('/rfidState/:stuhlId/:tagID', function (req, res) {
 	res.send(req.params);
 	refreshLamps();
 });
-
+/*
 app.get('/rfidState/:stuhlId/:position', function (req, res) {
     //console.log(req);
     var sendingStuhl = stuhle.find(e => e.id == req.params.stuhlId);
@@ -66,7 +66,7 @@ app.get('/rfidState/:stuhlId/:position', function (req, res) {
     console.log(sendingStuhl);
     res.send(req.params);
     refreshLamps();
-});
+});*/
 
 app.post('/lichtsensor', function (req, res) {
   console.log(req.body.brightness);
