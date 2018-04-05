@@ -1,9 +1,16 @@
 let huejay = require('huejay');
 const express = require('express');
 const hue = require('node-hue-api');
+const bodyParser = require('body-parser');
 
 const http = require('http');
 const app = express();
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
 var lampen = [{ id: 0, ip: "http://192.168.2.109", type: "SonOff", name: "One", status: false, position: { x: "100", y: "100" }, activationRadius: "200" },
 { id: 1, ip: "http://192.168.2.109", type: "SonOff", name: "Two", status: false, position: { x: "200", y: "100" }, activationRadius: "200" },
 { id: 2, ip: "http://192.168.2.109", type: "SonOff", name: "Three", status: false, position: { x: "300", y: "100" }, activationRadius: "200" },
@@ -62,7 +69,8 @@ app.get('/rfidState/:stuhlId/:position', function (req, res) {
 });
 
 app.post('/lichtsensor', function (req, res) {
-  res.send("test");
+  console.log(req.body.brightness);
+  res.send(req.body.brightness);
 });
 
 app.listen(80, () => console.log('Example app listening on port 80!'));
