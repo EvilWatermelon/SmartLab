@@ -3,14 +3,14 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 
-const int controlAddr = 0;                                  //EEPROM Adresse => 0 = keine Daten im EEPROM || 1 = Daten im EEPROM
-const int dataAddr = 1;                                     //EEPROM Adresse => Count der Stellen der SSID
+const int controlAddr = 0;                                  //EEPROM Adress => 0 = no data in the EEPROM || 1 = Data in the EEPROM
+const int dataAddr = 1;                                     //EEPROM Adress => Count of the places at the SSID
 
-const char *ssidHost = "ESP_Config";                        //SSID falls eigener Hotspot erstellt wird
-const char *passwordHost = "password";                      //Password falls eigner Hotspot erstellt wird
+const char *ssidHost = "ESP_Config";                        //SSID if there will be an own hotspot
+const char *passwordHost = "password";                      //Password if there will be an own hotspot
 
-String ssid = "";                                           //Falls SSID im EEPROM vorhanden wird diese hier Global gespeichert
-String password = "";                                       //Falls Password im EEPROM vorhanden wird dieses hier Global gespeichert
+String ssid = "";                                           //If SSID saved in the EEPROM it will be saved global
+String password = "";                                       //If Password saved in the EEPROM it will be saved global
 
 ESP8266WebServer server(80);            
 
@@ -27,24 +27,24 @@ void webConfigSubmit()
 /** Config Functions **/
 void newConfig()
 {
-    hotspot(ssidHost, passwordHost);                        //Erstellt einen Hotspot mit den oben deklarierten Daten für SSID & Password
+    hotspot(ssidHost, passwordHost);                        //Creates a hotspot with the declared SSID & Password
     server.begin();
 }
 void hotspot(const char *ssid,const char *password)
 {
-    WiFi.disconnect(true);                                  //Disconnect vom WiFi => andernfalls kann es zu Fehlern kommen
+    WiFi.disconnect(true);                                  //Disconnect from WiFi => otherwise there will be errors
     WiFi.softAP(ssid, password);
     IPAddress myIP = WiFi.softAPIP();
-    Serial.println(myIP);                                   //Gib die aktuelle IP Adresse aus (normalfall bei Hotspot 192.168.4.1)
+    Serial.println(myIP);                                   //Shows the current IP (hotspot 192.168.4.1)
 }
 void handleSubmit()
 {
   String ssidTmp = "";
   String passwordTmp = "";
   
-  if (server.args() > 0 )                                   //in server.args() sind die Input Felder gespeichert
+  if (server.args() > 0 )                                   //in server.args() there are saved Input fields
   {
-    for ( uint8_t i = 0; i < server.args(); i++ )           //loopt alle args durch und speichert SSID und Password ab (sofern eingegeben)
+    for ( uint8_t i = 0; i < server.args(); i++ )           //loops all args and saves SSID and Password
     {
       if (server.argName(i) == "SSID")              
       {
@@ -56,21 +56,21 @@ void handleSubmit()
       }
     }
   }
-  if(ssidTmp != "" and passwordTmp != "")                   //Sofern SSID & Password != "" sind werden die Werte in den EEPROM geschrieben
+  if(ssidTmp != "" and passwordTmp != "")                   //If SSID & Password != "" all values will be written into the EEPROM 
   {
-    EEPROM.write(1, ssidTmp.length());                      //SSID Länge einspeichern danach die SSID auf die einzelnen stellen verteilen und speichern
+    EEPROM.write(1, ssidTmp.length());                      //Save SSID length and then distribute the SSID on all places and save
     for(int i=0; i<ssidTmp.length(); i++)
     {
       EEPROM.write(i+2, ssidTmp[i]);    
     }
-    EEPROM.write(2+ssidTmp.length(), passwordTmp.length()); //Hinter die letzte Stelle der SSID Länge die Password Länge + Password speichern
+    EEPROM.write(2+ssidTmp.length(), passwordTmp.length()); //After the last point of the SSID length save the password length + Password     
     for(int y=0; y<passwordTmp.length(); y++)
     {
       EEPROM.write((y+3)+ssidTmp.length(), passwordTmp[y]);
     }
-    EEPROM.write(controlAddr, 1);                           //Erste Stelle des EEPROMS auf 1 setzen (SSID & Password sind gespeichert)
+    EEPROM.write(controlAddr, 1);                           //Create a place of the EEPROMS with value 1 (SSID & password are saved)
     webConfigSubmit();
-    EEPROM.commit();                                        //EEPROM Commit => Write abschließen und speichern
+    EEPROM.commit();                                        //EEPROM Commit => finish write and save
     wifiConnect(ssidTmp, passwordTmp);
   } 
 }
@@ -79,11 +79,11 @@ void handleSubmit()
 /** Functions **/
 void wifiConnect(String ssidConnect,String passwordConnect)
 {
-    WiFi.disconnect(true);                                  //Disconnect vom WiFi => andernfalls kann es zu Fehlern kommen
+    WiFi.disconnect(true);                                  //Disconnect from WiFi => otherwise there will be errors
     WiFi.begin(ssidConnect.c_str(), passwordConnect.c_str());
     /*
-     * Versuchen mit Wlan zuverbinden
-     * Sollte nach 10 Sekunden keine Verbindung möglich sein springt er raus und ruft zum neu konfigurieren auf
+     * Try to connect with the Wifi
+     * If there is no connection after 10 seconds configure a new one
      */
     int doCheck = 0;
     do
@@ -98,12 +98,10 @@ void wifiConnect(String ssidConnect,String passwordConnect)
         Serial.println("\n"+WiFi.localIP());
         server.begin();
     }else{
-        newConfig();                                        //Ruft Config auf sofern er keine WiFi Verbindung herstellen kann
+        newConfig();                                        //Calls Config if there is no Wifi connection
     }
 }
 
-/** Deine Funktionen **/
-/** Viel Spaß **/
 void getContent() 
 {
     server.send(200, "text/html", "<html><head></head><body><h1>Test</h1></body></html>");
@@ -113,23 +111,23 @@ void setup()
 {
     Serial.begin(9600);
     EEPROM.begin(512);
-    Serial.println("Start:");
+    Serial.println("Start: ");
     
 
     /*
-     *DEBUG MODE => setzt die Controladdress auf 0 d.h. keine Wlan Daten gespeichert => Config
+     *DEBUG MODE => set controladdress on 0 it means no Wifi connections will be saved => Config
      *
      *EEPROM.write(controlAddr, 0);
      *EEPROM.commit();
      */
 
 
-    int controlVal = EEPROM.read(controlAddr);              //Liest EEPROM(0) aus => 0 = Keine WLan Daten || 1 = Wlan Daten
+    int controlVal = EEPROM.read(controlAddr);              //Reads EEPROM(0) => 0 = no Wifi data || 1 = Wifi data
     if(controlVal == 0)
     {
-        newConfig();                                        //Neu konfigurieren
+        newConfig();                                        //New coniguration
     }else{
-        int ssidLength = EEPROM.read(1);                    //Liest SSID & Password aus dem EEPROM aus
+        int ssidLength = EEPROM.read(1);                    //Reads SSID & Password from the EEPROM 
         int passwordLength = EEPROM.read(2+ssidLength);
         for(int x=0; x<ssidLength; x++)
         {
@@ -141,26 +139,22 @@ void setup()
             char passwordOutTmp = char(EEPROM.read(z+3+ssidLength));
             password = password + String(passwordOutTmp);
         }
-        wifiConnect(ssid, password);                        //Ruft WifiConnect auf => um sich mit Wlan zuverbinden
+        wifiConnect(ssid, password);                        //Calls wifiConnect => for Wifi connect
     }
 
     /*
-     *Serverpfad händeln  
+     *Serverpath handle  
      */                             
     server.on("/config", webConfig);                        //Config
     server.on("/configSubmit", handleSubmit);               //ConfigSubmit
 
-    /** Dein Setup Code **/
-    /** Viel Spaß **/
     server.on("/", getContent);
 }
 
 void loop()
 {
-    server.handleClient();                                  //Auf Anfrage der Website warten
+    server.handleClient();                                  //Wait for website request
 
-    /** Dein Loop Code **/
-    /** Viel Spaß **/
 }
 
 
