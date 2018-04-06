@@ -12,3 +12,4 @@ A Project for components who can be used for a smart lab at our college
 - Lichtsensor implementieren
 - LED-Strip in die Tür
 - Geschwindigkeitsoptimierung 
+- Denglisch aus code entfernen und auf eine Sprache festlegen
