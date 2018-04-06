@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-var lampen = [{ id: 0, ip: "http://192.168.2.109", type: "SonOff", name: "One", status: false, position: { x: "100", y: "100" }, activationRadius: "200" },
+var lamps = [{ id: 0, ip: "http://192.168.2.109", type: "SonOff", name: "One", status: false, position: { x: "100", y: "100" }, activationRadius: "200" },
 { id: 1, ip: "http://192.168.2.109", type: "SonOff", name: "Two", status: false, position: { x: "200", y: "100" }, activationRadius: "200" },
 { id: 2, ip: "http://192.168.2.109", type: "SonOff", name: "Three", status: false, position: { x: "300", y: "100" }, activationRadius: "200" },
 { id: 3, ip: "http://192.168.2.109", type: "SonOff", name: "Four", status: false, position: { x: "400", y: "100" }, activationRadius: "200" },
@@ -33,7 +33,7 @@ var Tags = [
 var userList = [{id:1,color:{r:255,g:0,b:0}},
                 {id:2,color:{r:0,g:255,b:0}}]
 
-var stuhle = [
+var chairs = [
     { id: "1", state: 0, position: { x: "400", y: "100" }, user:userList[0]},
     { id: "2", state: 0, position: { x: "100", y: "100" }, user:userList[1]}
 ];
@@ -42,47 +42,47 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.get('/lamp/:lampid', function (req, res) {
     res.send(req.params);
-    var l = lampen.find(e => e.id == req.params.lampid && e.type == "Hue");
-    //sendingStuhl.state = parseInt(req.params.zustand);
+    var l = lamps.find(e => e.id == req.params.lampid && e.type == "Hue");
+    //sendingChair.state = parseInt(req.params.zustand);
     console.log(req.params);
     refreshHue(l);
 });
 
-app.get('/rfidState/:stuhlId/:tagID', function (req, res) {
+app.get('/rfidState/:chairId/:tagID', function (req, res) {
 	//console.log(req);
-	var sendingStuhl = stuhle.find(e=>e.id == req.params.stuhlId);
+	var sendingChair = chairs.find(e=>e.id == req.params.chairId);
 	var foundTag = Tags.find(e=>e.id == req.params.tagID); //NFC tag das der Stuhl ausgelsen hat
-	sendingStuhl.position = foundTag.position;
-	console.log(sendingStuhl);
+	sendingChair.position = foundTag.position;
+	console.log(sendingChair);
 	res.send(req.params);
 	refreshLamps();
 });
 /*
-app.get('/rfidState/:stuhlId/:position', function (req, res) {
+app.get('/rfidState/:chairId/:position', function (req, res) {
     //console.log(req);
-    var sendingStuhl = stuhle.find(e => e.id == req.params.stuhlId);
+    var sendingChair = chairs.find(e => e.id == req.params.chairId);
     var pos = req.params.position.split("_");
-    sendingStuhl.position = { x: pos[0], y: pos[1] };
-    console.log(sendingStuhl);
+    sendingChair.position = { x: pos[0], y: pos[1] };
+    console.log(sendingChair);
     res.send(req.params);
     refreshLamps();
 });*/
 
-app.post('/lichtsensor', function (req, res) {
+app.post('/lightsensor', function (req, res) {
   console.log(req.body.brightness);
   res.send(req.body.brightness);
 });
 
-app.listen(80, () => console.log('Example app listening on port 80!'));
+app.listen(80, () => console.log('Example app listening on port 8080!'));
 
 function refreshLamps() {
     var changeLightBlubs; // lightbulbs that needs to be changed
-    //stuhle.map(s=> s);
-    changeLightBlubs = lampen.map(
+    //chairs.map(s=> s);
+    changeLightBlubs = lamps.map(
         l => l.nextStatus = getNextStatus(l)
     );
-    //changeLightBlubs = lampen.filter(l => distance(l.position, chair.position) < l.activationRadius);
-    lampen.map(l => {
+    //changeLightBlubs = lamps.filter(l => distance(l.position, chair.position) < l.activationRadius);
+    lamps.map(l => {
         if (l.nextStatus != l.status) {
             console.log("switch: " + l.type + " " + l.id + " " + l.nextStatus);
             switch (l.type) {
@@ -102,17 +102,17 @@ function refreshLamps() {
 }
 
 function getNextStatus(l){
-    var stuhleInRangeOfLight = stuhle.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
-    if(stuhleInRangeOfLight.length > 0){
+    var chairInRangeOfLight = chairs.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
+    if(chairInRangeOfLight.length > 0){
         switch (l.type) {
             case "SonOff":
                 return true;
                 break;
             case "Hue":
-                return ( stuhleInRangeOfLight.reduce( function( sum, key ){ //returns the avrage colorvalue of each user sitting on the Stuhl
-                    sum.r += key.user.color.r/stuhleInRangeOfLight.length;
-                    sum.g += key.user.color.g/stuhleInRangeOfLight.length;
-                    sum.b += key.user.color.b/stuhleInRangeOfLight.length;
+                return ( chairInRangeOfLight.reduce( function( sum, key ){ //returns the avrage colorvalue of each user sitting on the Stuhl
+                    sum.r += key.user.color.r/chairInRangeOfLight.length;
+                    sum.g += key.user.color.g/chairInRangeOfLight.length;
+                    sum.b += key.user.color.b/chairInRangeOfLight.length;
                     return sum;
                 }, {r:0,g:0,b:0} ));
                 break;
@@ -135,7 +135,7 @@ function refreshSonOff(lamp) {
     try {
         var res1 = http.get(httpGet);
     } catch (error) {
-        console.log("cant reach: " + lamp.type + " " + lamp.id);
+        console.log("can't reach: " + lamp.type + " " + lamp.id);
     }
 
 }
