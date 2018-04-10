@@ -13,7 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-<<<<<<< HEAD
 var lampen,userList,Tags,chairs;
 
 fs.readFile('rfidTags.json', 'utf8', function (err, data) {
@@ -35,34 +34,6 @@ fs.readFile('userList.json', 'utf8', function (err, data) {
         chairs[1].user = userList[1]; // seeing wich user is sitting on the chair
     });
 });
-=======
-var lamps = [{ id: 0, ip: "http://192.168.2.109", type: "SonOff", name: "One", status: false, position: { x: "100", y: "100" }, activationRadius: "200" },
-{ id: 1, ip: "http://192.168.2.109", type: "SonOff", name: "Two", status: false, position: { x: "200", y: "100" }, activationRadius: "200" },
-{ id: 2, ip: "http://192.168.2.109", type: "SonOff", name: "Three", status: false, position: { x: "300", y: "100" }, activationRadius: "200" },
-{ id: 3, ip: "http://192.168.2.109", type: "SonOff", name: "Four", status: false, position: { x: "400", y: "100" }, activationRadius: "200" },
-{ id: 1, ip: "192.168.2.79", type: "Hue",hueUsername:"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", status: false, position: { x: "400", y: "100" }, activationRadius: "200" },
-{ id: 6, ip: "192.168.2.79", type: "Hue",hueUsername:"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", status: false, position: { x: "600", y: "100" }, activationRadius: "200" }];
-
-var Tags = [
-	{id:"2EFC36BB5F",name:"Card1",position: { x: "600", y: "100" }},
-	{id:"20CA36BB67",name:"Card2",position: { x: "600", y: "100" }},
-	{id:"E2F36BB60",name:"Card3",position: { x: "600", y: "100" }},
-	{id:"311936BBA5",name:"Card4",position: { x: "600", y: "100" }},
-	{id:"336736BBD9",name:"Card5",position: { x: "600", y: "100" }},
-	{id:"B2B8BE299D",name:"Card6",position: { x: "600", y: "100" }},
-	{id:"88435A118",name:"Tag1",position: { x: "600", y: "100" }},
-	{id:"884AA127",name:"Tag2",position: { x: "600", y: "100" }},
-	{id:"8847BA156",name:"Tag3",position: { x: "600", y: "100" }},
-];
-
-var userList = [{id:1,color:{r:255,g:0,b:0}},
-                {id:2,color:{r:0,g:255,b:0}}]
-
-var chairs = [
-    { id: "1", state: 0, position: { x: "400", y: "100" }, user:userList[0]},
-    { id: "2", state: 0, position: { x: "100", y: "100" }, user:userList[1]}
-];
->>>>>>> a4fc031276f197a353c9142ffdb50f7fe65347a7
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -74,7 +45,6 @@ app.get('/lamp/:lampid', function (req, res) {
     refreshHue(l);
 });
 
-<<<<<<< HEAD
 app.get('/sitState/:stuhlId/:zustand', function (req, res) {
     res.send(req.params);
     var sendingStuhl = chairs.find(e => e.id == req.params.stuhlId);
@@ -94,25 +64,12 @@ app.get('/rfidState/:stuhlId/:tagID', function (req, res) {
 	sendingStuhl.position = foundTag.position;
 	console.log("Found Tag:" + JSON.stringify( foundTag));
 	
-=======
-app.get('/rfidState/:chairId/:tagID', function (req, res) {
-	//console.log(req);
-	var sendingChair = chairs.find(e=>e.id == req.params.chairId);
-	var foundTag = Tags.find(e=>e.id == req.params.tagID); //NFC tag das der Stuhl ausgelsen hat
-	sendingChair.position = foundTag.position;
-	console.log(sendingChair);
-	res.send(req.params);
->>>>>>> a4fc031276f197a353c9142ffdb50f7fe65347a7
 	refreshLamps();
 });
 /*
 app.get('/rfidState/:chairId/:position', function (req, res) {
     //console.log(req);
-<<<<<<< HEAD
     var sendingStuhl = chairs.find(e => e.id == req.params.stuhlId);
-=======
-    var sendingChair = chairs.find(e => e.id == req.params.chairId);
->>>>>>> a4fc031276f197a353c9142ffdb50f7fe65347a7
     var pos = req.params.position.split("_");
     sendingChair.position = { x: pos[0], y: pos[1] };
     console.log(sendingChair);
@@ -130,11 +87,7 @@ app.listen(80, () => console.log('Example app listening on port 8080!'));
 function refreshLamps() {
     var changeLightBlubs; // lightbulbs that needs to be changed
     //chairs.map(s=> s);
-<<<<<<< HEAD
     changeLightBlubs = lampen.map(
-=======
-    changeLightBlubs = lamps.map(
->>>>>>> a4fc031276f197a353c9142ffdb50f7fe65347a7
         l => l.nextStatus = getNextStatus(l)
     );
     //changeLightBlubs = lamps.filter(l => distance(l.position, chair.position) < l.activationRadius);
@@ -158,13 +111,8 @@ function refreshLamps() {
 }
 
 function getNextStatus(l){
-<<<<<<< HEAD
     var stuhleInRangeOfLight = chairs.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
     if(stuhleInRangeOfLight.length > 0){
-=======
-    var chairInRangeOfLight = chairs.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
-    if(chairInRangeOfLight.length > 0){
->>>>>>> a4fc031276f197a353c9142ffdb50f7fe65347a7
         switch (l.type) {
             case "SonOff":
                 return true;
