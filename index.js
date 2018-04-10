@@ -2,6 +2,8 @@ let huejay = require('huejay');
 const express = require('express');
 const hue = require('node-hue-api');
 const bodyParser = require('body-parser');
+var fs = require('fs');
+
 
 const http = require('http');
 const app = express();
@@ -11,32 +13,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-var lampen = [{ id: 0, ip: "http://192.168.2.109", type: "SonOff", name: "One", status: false, position: { x: "100", y: "100" }, activationRadius: "200" },
-{ id: 1, ip: "http://192.168.2.109", type: "SonOff", name: "Two", status: false, position: { x: "200", y: "100" }, activationRadius: "200" },
-{ id: 2, ip: "http://192.168.2.109", type: "SonOff", name: "Three", status: false, position: { x: "300", y: "100" }, activationRadius: "200" },
-{ id: 3, ip: "http://192.168.2.109", type: "SonOff", name: "Four", status: false, position: { x: "400", y: "100" }, activationRadius: "200" },
-{ id: 1, ip: "192.168.2.79", type: "Hue",hueUsername:"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", status: false, position: { x: "400", y: "100" }, activationRadius: "200" },
-{ id: 6, ip: "192.168.2.79", type: "Hue",hueUsername:"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", status: false, position: { x: "600", y: "100" }, activationRadius: "200" }];
+var lampen,userList,Tags,chairs;
 
-var Tags = [
-	{id:"2EFC36BB5F",name:"Card1",position: { x: "600", y: "100" }},
-	{id:"20CA36BB67",name:"Card2",position: { x: "600", y: "100" }},
-	{id:"E2F36BB60",name:"Card3",position: { x: "600", y: "100" }},
-	{id:"311936BBA5",name:"Card4",position: { x: "600", y: "100" }},
-	{id:"336736BBD9",name:"Card5",position: { x: "600", y: "100" }},
-	{id:"B2B8BE299D",name:"Card6",position: { x: "600", y: "100" }},
-	{id:"88435A118",name:"Tag1",position: { x: "600", y: "100" }},
-	{id:"884AA127",name:"Tag2",position: { x: "600", y: "100" }},
-	{id:"8847BA156",name:"Tag3",position: { x: "600", y: "100" }},
-];
+fs.readFile('rfidTags.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    Tags = JSON.parse(data);
+  });
+fs.readFile('lamps.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    lampen = JSON.parse(data);
+});
 
-var userList = [{id:1,color:{r:255,g:0,b:0}},
-                {id:2,color:{r:0,g:255,b:0}}]
-
-var stuhle = [
-    { id: "1", state: 0, position: { x: "400", y: "100" }, user:userList[0]},
-    { id: "2", state: 0, position: { x: "100", y: "100" }, user:userList[1]}
-];
+fs.readFile('userList.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    userList = JSON.parse(data);
+    fs.readFile('chairs.json', 'utf8', function (err, data) {
+        if (err) throw err;
+        chairs = JSON.parse(data);
+        chairs[0].user = userList[0]; // ToDo: System that is capable of
+        chairs[1].user = userList[1]; // seeing wich user is sitting on the chair
+    });
+});
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -48,19 +45,31 @@ app.get('/lamp/:lampid', function (req, res) {
     refreshHue(l);
 });
 
+app.get('/sitState/:stuhlId/:zustand', function (req, res) {
+    res.send(req.params);
+    var sendingStuhl = chairs.find(e => e.id == req.params.stuhlId);
+    sendingStuhl.state = parseInt(req.params.zustand);
+    console.log(req.params);
+
+    //console.log(res1);
+    //console.log(httpGet);
+    refreshLamps();
+});
+
 app.get('/rfidState/:stuhlId/:tagID', function (req, res) {
-	//console.log(req);
-	var sendingStuhl = stuhle.find(e=>e.id == req.params.stuhlId);
+    console.log("got rfidState request");
+    res.send("req.params");
+	var sendingStuhl = chairs.find(e=>e.id == req.params.stuhlId);
 	var foundTag = Tags.find(e=>e.id == req.params.tagID); //NFC tag das der Stuhl ausgelsen hat
 	sendingStuhl.position = foundTag.position;
-	console.log(sendingStuhl);
-	res.send(req.params);
+	console.log("Found Tag:" + JSON.stringify( foundTag));
+	
 	refreshLamps();
 });
 /*
 app.get('/rfidState/:stuhlId/:position', function (req, res) {
     //console.log(req);
-    var sendingStuhl = stuhle.find(e => e.id == req.params.stuhlId);
+    var sendingStuhl = chairs.find(e => e.id == req.params.stuhlId);
     var pos = req.params.position.split("_");
     sendingStuhl.position = { x: pos[0], y: pos[1] };
     console.log(sendingStuhl);
@@ -77,14 +86,14 @@ app.listen(80, () => console.log('Example app listening on port 80!'));
 
 function refreshLamps() {
     var changeLightBlubs; // lightbulbs that needs to be changed
-    //stuhle.map(s=> s);
+    //chairs.map(s=> s);
     changeLightBlubs = lampen.map(
         l => l.nextStatus = getNextStatus(l)
     );
     //changeLightBlubs = lampen.filter(l => distance(l.position, chair.position) < l.activationRadius);
     lampen.map(l => {
         if (l.nextStatus != l.status) {
-            console.log("switch: " + l.type + " " + l.id + " " + l.nextStatus);
+            console.log("switch: " + l.type + " " + l.id + " " + JSON.stringify(l.nextStatus));
             switch (l.type) {
                 case "SonOff":
                     //refreshSonOff(l);
@@ -102,7 +111,7 @@ function refreshLamps() {
 }
 
 function getNextStatus(l){
-    var stuhleInRangeOfLight = stuhle.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
+    var stuhleInRangeOfLight = chairs.filter(s => s.state != 0 && distance(l.position, s.position) < l.activationRadius);
     if(stuhleInRangeOfLight.length > 0){
         switch (l.type) {
             case "SonOff":

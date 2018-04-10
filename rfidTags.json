@@ -1,0 +1,11 @@
+[
+	{"id":"2EFC36BB5F","name":"Card1","position": { "x": "100", "y": "100" }},
+    {"id":"20CA36BB67","name":"Card2","position": { "x": "200", "y": "100" }},
+	{"id":"E2F36BB60","name":"Card3","position": { "x": "300", "y": "100" }},
+    {"id":"311936BBA5","name":"Card4","position": { "x": "400", "y": "100" }},
+	{"id":"336736BBD9","name":"Card5","position": { "x": "500", "y": "100" }},
+	{"id":"B2B8BE299D","name":"Card6","position": { "x": "600", "y": "100" }},
+    {"id":"88435A118","name":"Tag1","position": { "x": "300", "y": "0" }},
+	{"id":"884AA127","name":"Tag2","position": { "x": "300", "y": "50" }},
+	{"id":"8847BA156","name":"Tag3","position": { "x": "300", "y": "150" }}
+]

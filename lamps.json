@@ -1,0 +1,8 @@
+[
+    { "id": 0, "ip": "http://192.168.2.109", "type": "SonOff", "name": "One", "status": false, "position": { "x": "100", "y": "100" }, "activationRadius": "200" },
+    { "id": 1, "ip": "http://192.168.2.109", "type": "SonOff", "name": "Two", "status": false, "position": { "x": "200", "y": "100" }, "activationRadius": "200" },
+    { "id": 2, "ip": "http://192.168.2.109", "type": "SonOff", "name": "Three", "status": false, "position": { "x": "300", "y": "100" }, "activationRadius": "200" },
+    { "id": 3, "ip": "http://192.168.2.109", "type": "SonOff", "name": "Four", "status": false, "position": { "x": "400", "y": "100" }, "activationRadius": "200" },
+    { "id": 1, "ip": "192.168.2.79", "type": "Hue","hueUsername":"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", "status": false, "position": { "x": "400", "y": "100" }, "activationRadius": "200" },
+    { "id": 6, "ip": "192.168.2.79", "type": "Hue","hueUsername":"CKz4-mVVsU856bBd2GLQ4VxqAzgd8ik2aYsBR1Ow", "status": false, "position": { "x": "600", "y": "100" }, "activationRadius": "200" }
+]
