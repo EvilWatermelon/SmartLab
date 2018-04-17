@@ -3,7 +3,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-const char* ssid = "JansWifi";
+const char* ssid = "JanHatNenKleinen";
 const char* password = "12345678";
 unsigned long lastChange;
 bool isLeft = true;
@@ -90,13 +90,13 @@ void loop(void){
         digitalWrite(5, 1);
         digitalWrite(4, 1);
         digitalWrite(14, 0);
-        Serial.println("Chair is left");
+        Serial.println("Stuhl ist Links");
       }else{
         digitalWrite(16, 1);
         digitalWrite(5, 0);
         digitalWrite(4, 0);
         digitalWrite(14, 1);
-        Serial.println("Chair is right ");
+        Serial.println("Stuhl ist Rechts ");
       }
     }
   }

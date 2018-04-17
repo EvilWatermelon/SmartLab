@@ -27,30 +27,30 @@ void webConfig()
 }
 void webConfigSubmit()
 {
-    server.send(200, "text/html", "<html><head></head><body><h1>The device will be configured and rebooted. Please wait.</h1></body></html>");
+    server.send(200, "text/html", "<html><head></head><body><h1>Das Gerät wird Configuriert und anschließend neu gestartet. Bitte warten Sie.</h1></body></html>");
 }
 
 /** Config Functions **/
 void newConfig()
 {
-    hotspot(ssidHost, passwordHost);                        //Opens a new Hotspot with the declared data for SSID & password
+    hotspot(ssidHost, passwordHost);                        //Erstellt einen Hotspot mit den oben deklarierten Daten für SSID & Password
     server.begin();
 }
 void hotspot(const char *ssid,const char *password)
 {
-    WiFi.disconnect(true);                                  //Disconnect from WiFi => otherwise there will be errors
+    WiFi.disconnect(true);                                  //Disconnect vom WiFi => andernfalls kann es zu Fehlern kommen
     WiFi.softAP(ssid, password);
     IPAddress myIP = WiFi.softAPIP();
-    Serial.println(myIP);                                   //Shows the current IP (Hotspot 192.168.4.1)
+    Serial.println(myIP);                                   //Gib die aktuelle IP Adresse aus (normalfall bei Hotspot 192.168.4.1)
 }
 void handleSubmit()
 {
   String ssidTmp = "";
   String passwordTmp = "";
   
-  if (server.args() > 0 )                                   //in server.args() are the input fields saved
+  if (server.args() > 0 )                                   //in server.args() sind die Input Felder gespeichert
   {
-    for ( uint8_t i = 0; i < server.args(); i++ )           //loop all args and saves SSID and Password
+    for ( uint8_t i = 0; i < server.args(); i++ )           //loopt alle args durch und speichert SSID und Password ab (sofern eingegeben)
     {
       if (server.argName(i) == "SSID")              
       {
@@ -62,21 +62,21 @@ void handleSubmit()
       }
     }
   }
-  if(ssidTmp != "" and passwordTmp != "")                   //If SSID & Password != "" then the EEPROM saves the values
+  if(ssidTmp != "" and passwordTmp != "")                   //Sofern SSID & Password != "" sind werden die Werte in den EEPROM geschrieben
   {
-    EEPROM.write(1, ssidTmp.length());                      //Save SSID length and distributes and saves the SSID at all places
+    EEPROM.write(1, ssidTmp.length());                      //SSID Länge einspeichern danach die SSID auf die einzelnen stellen verteilen und speichern
     for(int i=0; i<ssidTmp.length(); i++)
     {
       EEPROM.write(i+2, ssidTmp[i]);    
     }
-    EEPROM.write(2+ssidTmp.length(), passwordTmp.length()); //Saves after the last SSID length the password length and the password
+    EEPROM.write(2+ssidTmp.length(), passwordTmp.length()); //Hinter die letzte Stelle der SSID Länge die Password Länge + Password speichern
     for(int y=0; y<passwordTmp.length(); y++)
     {
       EEPROM.write((y+3)+ssidTmp.length(), passwordTmp[y]);
     }
-    EEPROM.write(controlAddr, 1);                           //Set first place of the EEPROM on 1 (SSID and password are saved)
+    EEPROM.write(controlAddr, 1);                           //Erste Stelle des EEPROMS auf 1 setzen (SSID & Password sind gespeichert)
     webConfigSubmit();
-    EEPROM.commit();                                        //EEPROM Commit => finish write and save
+    EEPROM.commit();                                        //EEPROM Commit => Write abschließen und speichern
     wifiConnect(ssidTmp, passwordTmp);
   } 
 }
@@ -85,11 +85,11 @@ void handleSubmit()
 /** Functions **/
 void wifiConnect(String ssidConnect,String passwordConnect)
 {
-    WiFi.disconnect(true);                                  //Disconnect from WiFi => otherwise there can be errors
+    WiFi.disconnect(true);                                  //Disconnect vom WiFi => andernfalls kann es zu Fehlern kommen
     WiFi.begin(ssidConnect.c_str(), passwordConnect.c_str());
     /*
-     * Try to connect to the Wifi
-     * If there's after 10 seconds no connection he cancel and do a new configuration
+     * Versuchen mit Wlan zuverbinden
+     * Sollte nach 10 Sekunden keine Verbindung möglich sein springt er raus und ruft zum neu konfigurieren auf
      */
     int doCheck = 0;
     do
@@ -105,10 +105,12 @@ void wifiConnect(String ssidConnect,String passwordConnect)
         Serial.println("\n"+WiFi.localIP());
         server.begin();
     }else{
-        newConfig();                                        //If there's no Wifi connection he calls the config
+        newConfig();                                        //Ruft Config auf sofern er keine WiFi Verbindung herstellen kann
     }
 }
 
+/** Deine Funktionen **/
+/** Viel Spaß **/
 void httpPost()
 {
     HTTPClient http;    //Declare object of class HTTPClient
@@ -156,14 +158,17 @@ void setup()
             char passwordOutTmp = char(EEPROM.read(z+3+ssidLength));
             password = password + String(passwordOutTmp);
         }
-        wifiConnect(ssid, password);                        //Calls WifiConnect => for the Wifi connection
+        wifiConnect(ssid, password);                        //Ruft WifiConnect auf => um sich mit Wlan zuverbinden
     }
 
     /*
-     *Serverpath handle  
+     *Serverpfad händeln  
      */                             
     server.on("/config", webConfig);                        //Config
     server.on("/configSubmit", handleSubmit);               //ConfigSubmit
+
+    /** Dein Setup Code **/
+    /** Viel Spaß **/
 }
 
 int postTmp = 0;
@@ -171,8 +176,10 @@ int wertTmp = 0;
 
 void loop()
 {
-    server.handleClient();                                  //Wait for website request
-    
+    server.handleClient();                                  //Auf Anfrage der Website warten
+
+    /** Dein Loop Code **/
+    /** Viel Spaß **/
     if(WiFi.status()== WL_CONNECTED){
       Serial.println(analogRead(adc));
       if(postTmp >= 10){
