@@ -17,7 +17,7 @@ ESP8266WebServer server(80);
 /** WebPages **/
 void webConfig() 
 {
-    server.send(200, "text/html", "<html><head><style>*{box-sizing: border-box;}form{width: 150px;margin-left: auto;margin-right: auto;margin-bottom: 1em;margin-top: 0em;display: block;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.form-group{margin-bottom: 1rem;display: block;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.form-control{display: block;width: 100%;padding: .375rem .75rem;font-size: 1rem;line-height: 1.5;color: #495057;background-color: #fff;background-clip: padding-box;border: 1px solid #ced4da;border-radius: .25rem;}input{overflow: visible;margin: 0;font-family: inherit;}.btn-primary{margin-left: auto;margin-right: auto;display: block;cursor: pointer;color: #fff;background-color: #007bff;border-color: #007bff;}.btn{font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;user-select: none;border: 1px solid transparent;padding: .375rem .75rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;-webkit-appearance: button;text-transform: none;overflow: visible;margin: 0;font-family: inherit;}</style></head><body><form action='http://192.168.4.1/configSubmit' method='POST'><div class="form-group"><input type="text" name="SSID" class="form-control" id="inputSSID"  placeholder="SSID"></div><div class="form-group"><input type="password" name="password" class="form-control" id="inputPassword"  placeholder="Password"></div><button type="submit" class="btn btn-primary">Submit</button></form></body></html>");
+    server.send(200, "text/html", "<html><head><style>*{box-sizing: border-box;}form{width: 150px;margin-left: auto;margin-right: auto;margin-bottom: 1em;margin-top: 0em;display: block;font-family: -apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.form-group{margin-bottom: 1rem;display: block;font-family: -apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.form-control{display: block;width: 100%;padding: .375rem .75rem;font-size: 1rem;line-height: 1.5;color: #495057;background-color: #fff;background-clip: padding-box;border: 1px solid #ced4da;border-radius: .25rem;}input{overflow: visible;margin: 0;font-family: inherit;}.btn-primary{margin-left: auto;margin-right: auto;display: block;cursor: pointer;color: #fff;background-color: #007bff;border-color: #007bff;}.btn{font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;user-select: none;border: 1px solid transparent;padding: .375rem .75rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;-webkit-appearance: button;text-transform: none;overflow: visible;margin: 0;font-family: inherit;}</style></head><body><form action='http://192.168.4.1/configSubmit' method='POST'><div class=\"form-group\"><input type=\"text\" name=\"SSID\" class=\"form-control\" id=\"inputSSID\"  placeholder=\"SSID\"></div><div class=\"form-group\"><input type=\"password\" name=\"password\" class=\"form-control\" id=\"inputPassword\"  placeholder=\"Password\"></div><button type=\"submit\" class=\"btn btn-primary\">Submit</button></form></body></html>");
 }
 void webConfigSubmit()
 {
@@ -116,10 +116,10 @@ void setup()
 
     /*
      *DEBUG MODE => set controladdress on 0 it means no Wifi connections will be saved => Config
-     *
-     *EEPROM.write(controlAddr, 0);
-     *EEPROM.commit();
      */
+     EEPROM.write(controlAddr, 0);
+     EEPROM.commit();
+     
 
 
     int controlVal = EEPROM.read(controlAddr);              //Reads EEPROM(0) => 0 = no Wifi data || 1 = Wifi data
