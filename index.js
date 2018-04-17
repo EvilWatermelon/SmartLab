@@ -5,15 +5,17 @@ const bodyParser = require('body-parser');
 var fs = require('fs');
 
 
+
 const http = require('http');
 const app = express();
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
+app.set('view engine', 'pug');
 
 // parse application/json
 app.use(bodyParser.json());
 
-var lampen,userList,Tags,chairs;
+var lamps,userList,Tags,chairs;
 
 fs.readFile('rfidTags.json', 'utf8', function (err, data) {
     if (err) throw err;
@@ -21,7 +23,7 @@ fs.readFile('rfidTags.json', 'utf8', function (err, data) {
   });
 fs.readFile('lamps.json', 'utf8', function (err, data) {
     if (err) throw err;
-    lampen = JSON.parse(data);
+    lamps = JSON.parse(data);
 });
 
 fs.readFile('userList.json', 'utf8', function (err, data) {
@@ -35,7 +37,11 @@ fs.readFile('userList.json', 'utf8', function (err, data) {
     });
 });
 
-app.get('/', (req, res) => res.send('Hello World!'));
+
+
+app.get('/', function (req, res) {
+    res.render('index', { title: 'SmartLab', chairs:chairs});
+  });
 
 app.get('/lamp/:lampid', function (req, res) {
     res.send(req.params);
@@ -59,12 +65,21 @@ app.get('/sitState/:stuhlId/:zustand', function (req, res) {
 app.get('/rfidState/:stuhlId/:tagID', function (req, res) {
     console.log("got rfidState request");
     res.send("req.params");
-	var sendingStuhl = chairs.find(e=>e.id == req.params.stuhlId);
-	var foundTag = Tags.find(e=>e.id == req.params.tagID); //NFC tag das der Stuhl ausgelsen hat
-	sendingStuhl.position = foundTag.position;
-	console.log("Found Tag:" + JSON.stringify( foundTag));
-	
-	refreshLamps();
+    
+    var sendingStuhl = chairs.find(e=>e.id == req.params.stuhlId);
+    var foundTag = Tags.find(e=>e.id == req.params.tagID); //NFC tag das der Stuhl ausgelsen hat
+    console.log(req.params.tagID + " "+ foundTag);
+    if(foundTag != undefined){
+        sendingStuhl.position = foundTag.position;
+        console.log("Found Tag:" + JSON.stringify( foundTag));
+        refreshLamps();
+    }else{
+        Tags.push({"id":req.params.tagID,"name":"Tag","position": { "x": "0", "y": "0" }});
+        fs.writeFile('rfidTags.json', JSON.stringify(Tags, null, 4), (err) => { 
+            if (err) throw err;
+            console.log('new Tag added');
+        });
+    }
 });
 /*
 app.get('/rfidState/:chairId/:position', function (req, res) {
@@ -87,7 +102,7 @@ app.listen(80, () => console.log('Example app listening on port 8080!'));
 function refreshLamps() {
     var changeLightBlubs; // lightbulbs that needs to be changed
     //chairs.map(s=> s);
-    changeLightBlubs = lampen.map(
+    changeLightBlubs = lamps.map(
         l => l.nextStatus = getNextStatus(l)
     );
     //changeLightBlubs = lamps.filter(l => distance(l.position, chair.position) < l.activationRadius);
