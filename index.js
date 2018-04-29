@@ -12,8 +12,11 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'pug');
 
+app.use('/css',express.static(__dirname+'/node_modules/materialize-css/dist/css'))
+app.use('/js',express.static(__dirname+'/node_modules/materialize-css/dist/js'))
 // parse application/json
 app.use(bodyParser.json());
+
 
 var lamps,userList,Tags,chairs;
 
@@ -41,6 +44,12 @@ fs.readFile('userList.json', 'utf8', function (err, data) {
 
 app.get('/', function (req, res) {
     res.render('index', { title: 'SmartLab', chairs:chairs});
+  });
+app.get('/chairs', function (req, res) {
+    res.render('chairs', { title: 'SmartLab', chairs:chairs});
+  });
+  app.get('/lamps', function (req, res) {
+    res.render('lamps', { title: 'SmartLab', lamps:lamps});
   });
 
 app.get('/lamp/:lampid', function (req, res) {
@@ -97,7 +106,7 @@ app.post('/lightsensor', function (req, res) {
   res.send(req.body.brightness);
 });
 
-app.listen(80, () => console.log('Example app listening on port 8080!'));
+var listener  = app.listen(80, () => console.log('Example app listening on port '+listener.address().port+'!'));
 
 function refreshLamps() {
     var changeLightBlubs; // lightbulbs that needs to be changed
