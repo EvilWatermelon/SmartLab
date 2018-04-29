@@ -35,8 +35,8 @@ fs.readFile('userList.json', 'utf8', function (err, data) {
     fs.readFile('chairs.json', 'utf8', function (err, data) {
         if (err) throw err;
         chairs = JSON.parse(data);
-        chairs[0].user = userList[0]; // ToDo: System that is capable of
-        chairs[1].user = userList[1]; // seeing wich user is sitting on the chair
+        //chairs[0].user = userList[0]; // ToDo: System that is capable of
+        //chairs[1].user = userList[1]; // seeing wich user is sitting on the chair
     });
 });
 
@@ -46,11 +46,40 @@ app.get('/', function (req, res) {
     res.render('index', { title: 'SmartLab', chairs:chairs});
   });
 app.get('/chairs', function (req, res) {
+    console.log(req.query.color);
+    if(typeof req.query.color != 'undefined'){
+        var c = chairs.find(e => e.id == req.query.chairId);
+        var rgb = hex2rgb(req.query.color);
+        c.color.r = rgb[0];
+        c.color.g = rgb[1];
+        c.color.b = rgb[2];
+        fs.writeFile('chairs.json', JSON.stringify(chairs, null, 4), (err) => { 
+            if (err) throw err;
+            console.log('chairs.json Changed');
+        });
+    }
+    chairs.map(c=> c.color.hex = rgb2hex(c.color.r,c.color.g,c.color.b));
     res.render('chairs', { title: 'SmartLab', chairs:chairs});
   });
+
   app.get('/lamps', function (req, res) {
     res.render('lamps', { title: 'SmartLab', lamps:lamps});
   });
+  function rgb2hex(red, green, blue) {
+    var rgb = blue | (green << 8) | (red << 16);
+    return '#' + (0x1000000 + rgb).toString(16).slice(1)
+  }
+  function hex2rgb(hex) {
+    r = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (r) {
+            return r.slice(1,4).map(function(x) { return parseInt(x, 16); });
+    }
+    r = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+    if (r) {
+            return r.slice(1,4).map(function(x) { return 0x11 * parseInt(x, 16); });
+    }
+    return null;
+  }
 
 app.get('/lamp/:lampid', function (req, res) {
     res.send(req.params);
@@ -143,9 +172,9 @@ function getNextStatus(l){
                 break;
             case "Hue":
                 return ( chairInRangeOfLight.reduce( function( sum, key ){ //returns the avrage colorvalue of each user sitting on the Stuhl
-                    sum.r += key.user.color.r/chairInRangeOfLight.length;
-                    sum.g += key.user.color.g/chairInRangeOfLight.length;
-                    sum.b += key.user.color.b/chairInRangeOfLight.length;
+                    sum.r += key.color.r/chairInRangeOfLight.length;
+                    sum.g += key.color.g/chairInRangeOfLight.length;
+                    sum.b += key.color.b/chairInRangeOfLight.length;
                     return sum;
                 }, {r:0,g:0,b:0} ));
                 break;
