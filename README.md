@@ -14,6 +14,37 @@ Zudem ist durch offene REST Schnittstellen für eine einfache Möglichkeit gesor
 - Geschwindigkeitsoptimierung 
 
 
-\section{HARDWARE-ARCHITEKTUR}
-
-Die Hardware Architektur besteht aus NFC-Tags zum Clustern des Raums. Damit lässt sich die Position eines Stuhls bestimmen. Zu jeder Flächenposition im Raum gibt es eine Glühbirne, die aufleuchtet, sobald ein besetzter Stuhl über die NFC-Tags auf die Fläche rollt. Zum Erkennen eines besetzten Stuhls ist immer ein Drucksensor eingebaut. Der Sensor erkennt das ansteigende Gewicht und gibt ein Signal, dass der Stuhl besetzt ist. Jeder Stuhl hat einen RFID Reader, angebaut an einem NodeMCU. Der NodeMCU gibt die Position und die Bestätigung, das ein Stuhl besetzt ist, an den Raspberry Pi weiter, auf dem ein Webserver läuft. Das System ist in einem eigenen Netzwerk, damit eine Datenübertragung problemlos stattfindet. 
+<h2 id="struktur-der-json-dokumente">Struktur der JSON Dokumente</h2>
+<p><span id="list_of_Objects" label="list_of_Objects">[list_of_Objects]</span></p>
+<table>
+<caption>Chairs</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Atr.Name</th>
+<th style="text-align: center;">Typ</th>
+<th style="text-align: center;">Beispiel</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">ID</td>
+<td style="text-align: center;">Mac.Addr</td>
+<td style="text-align: center;">68:C6:3A:9F:59:0C</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">State</td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;">0 oder 1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Position</td>
+<td style="text-align: center;">x,y</td>
+<td style="text-align: center;">{&quot;x&quot;: &quot;400&quot;,&quot;y&quot;: &quot;100&quot;}</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">color</td>
+<td style="text-align: center;">r,g,b</td>
+<td style="text-align: center;">{&quot;r&quot;: 255,&quot;g&quot;: 0,&quot;b&quot;: 230}</td>
+</tr>
+</tbody>
+</table>
