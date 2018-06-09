@@ -13,18 +13,18 @@ Zudem ist durch offene REST Schnittstellen für eine einfache Möglichkeit gesor
 - LED-Strip in die Tür
 - Geschwindigkeitsoptimierung 
 
-#HARDWARE-ARCHITEKTUR
+# HARDWARE-ARCHITEKTUR
 
 Die Hardware Architektur besteht aus NFC-Tags zum Clustern des Raums. Damit lässt sich die Position eines Stuhls bestimmen. Zu jeder Flächenposition im Raum gibt es eine Glühbirne, die aufleuchtet, sobald ein besetzter Stuhl über die NFC-Tags auf die Fläche rollt. Zum Erkennen eines besetzten Stuhls ist immer ein Drucksensor eingebaut. Der Sensor erkennt das ansteigende Gewicht und gibt ein Signal, dass der Stuhl besetzt ist. Jeder Stuhl hat einen RFID Reader, angebaut an einem NodeMCU. Der NodeMCU gibt die Position und die Bestätigung, das ein Stuhl besetzt ist, an den Raspberry Pi weiter, auf dem ein Webserver läuft. Das System ist in einem eigenen Netzwerk, damit eine Datenübertragung problemlos stattfindet. 
 
 Alternativ zur Client-Server Architektur hätte auch eine Peer-to-Peer Architektur verwendet werden können, indem die einzelnen Geräte direkt miteinander kommunizieren. Jedoch wäre dadurch die Erweiterung durch verschiedene Komponenten tendenziell schwerer. Durch die Client-Server Architektur muss nicht jedes Gerät jedes andere Gerät kennen, sondern alle Geräte müssen ausnahmslos den Server kennen beziehungsweise der Server die Geräte, die er ansprechen muss. Sollte folglich ein weiterer Aktor dazukommen, müsste dies nur im Server implementieren werden und nicht auf allen vorherigen Objekten. Wenn jedoch nur ein weiteres Sensorobjekt, wie ein Stuhl dazu kommt, muss dies nur auf dem Sensorobjekt selbst berücksichtigen, aber nicht auf anderen Geräten.
 
-#SOFTWARE-ARCHITEKTUR
+# SOFTWARE-ARCHITEKTUR
 
 Die Software Architektur besteht aus C Programmen und einem in Javascript geschriebenen Webserver.
 Die Stühle senden ihre Position und ob sie besetzt sind über ein Programm, welches sich auf dem NodeMCU befindet, an den Webserver. Dieser wird auf dem Raspberry Pi ausgeführt. Der Webserver nimmt die Position der Stühle auf und sendet an die entsprechende Glühbirne ein Signal zum aufleuchten.
 
-<h2 id="webserver">Webserver</h2>
+<h3>Webserver</h3>
 
 Der Webserver ist das "Kernstück". Sobald er gestartet wird liest er die Konfigurationsdaten sowie die IPs der einzelnen Geräte aus, sodass er mit diesen Kommunizieren kann. Um das Projekt mit weiteren Geräten zu erweitern, können in den JSON Datein zusätzliche Einträge hinzugefügt werden. Für eine bessere Übersicht sorgt eine GUI welche über "(Ip-Adresse des Raspberry)/lamps" und "(Ip-Adresse des Raspberry)/chairs" mit einem Browser aufgerufen werden. 
 
@@ -39,8 +39,7 @@ Auch andere Formen als ein Kreis zur Aktivierung der Geräte, wie beispielsweise
 Im nächsten Schritt werden nun alle Geräte deren Status sich verändert hat über eine REST Schnittstelle aufgerufen und der neue Status gesendet. Diese Änderungen werden ebenfalls in der "Ansprechgerät.json" Datei gespeichert, so das bei einem Serverausfall der aktuelle Status immernoch gesichert ist. Hier kann es jedoch zu Problemen kommen falls der Status eines Gerätes sich nicht über das System ändert. Sollte beispielsweise ein Licht über einen Schalter aktivert werden, würde sich der Status auf der Serverseite nicht ändern. Somit würde die Lampe auch nicht deaktivert werden, wenn eine Person vom Stuhl aufsteht, da der Server bereits gespeichert hat, das diese deaktivert ist und somit kein Signal sendet, das sie deaktivert werden soll. Eine Schnittstelle, welche dem Server mitteilt, dass der Status eines Gerätes sich verändert hat, wäre eine sinnvolle Weiterentwicklung. 
 
 
-<h2>Struktur der JSON Dokumente</h2>
-<p><span id="list_of_Objects" label="list_of_Objects">[list_of_Objects]</span></p>
+<h3>Struktur der JSON Dokumente</h3>
 <table>
 <caption>Chairs</caption>
 <thead>
@@ -90,7 +89,6 @@ Im nächsten Schritt werden nun alle Geräte deren Status sich verändert hat ü
 </dd>
 </dl>
 
-<p><span id="list_of_Objects" label="list_of_Objects">[list_of_Objects]</span></p>
 <table>
 <caption>Ansprechgerät</caption>
 <thead>
@@ -170,7 +168,6 @@ Im nächsten Schritt werden nun alle Geräte deren Status sich verändert hat ü
 </dd>
 </dl>
 
-<p><span id="list_of_Objects" label="list_of_Objects">[list_of_Objects]</span></p>
 <table>
 <caption>NFC-Tags</caption>
 <thead>
@@ -209,7 +206,7 @@ Im nächsten Schritt werden nun alle Geräte deren Status sich verändert hat ü
 <dd><p>position gibt die x und y Koordinaten eines NFC-Tags wieder.</p>
 </dd>
 </dl>
-<p><span id="list_of_Objects" label="list_of_Objects">[list_of_Objects]</span></p>
+
 <table>
 <caption>User List</caption>
 <thead>
