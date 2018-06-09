@@ -281,8 +281,7 @@ Im nächsten Schritt werden nun alle Geräte deren Status sich verändert hat ü
 <dl>
 <dt>1.</dt>
 <dd><p>Um die C-Programme zu verwenden wird die ArduinoIDE benötigt. Diese kann unter den folgenden Links für Windows, Mac oder Linux heruntergeladen werden:</p>
-<pre><code>https://www.arduino.cc/
-en/Main/Software
+<pre><code>https://www.arduino.cc/en/Main/Software
  </code></pre>
 </dd>
 <dt>2.</dt>
@@ -290,8 +289,7 @@ en/Main/Software
 </dd>
 <dt>3.</dt>
 <dd><p>Unter dem Reiter &quot;Datei&quot; wird der Unterpunkt &quot;Voreinstellungen&quot; ausgewählt. Dort wird in Textzeile zu &quot;Zusätzliche Boardverwalter-URLs:&quot; folgenden Link eingefügt:</p>
-<pre><code>http://arduino.esp8266.com/
-stable/package_esp8266com_index.json
+<pre><code>http://arduino.esp8266.com/stable/package_esp8266com_index.json
  </code></pre>
 </dd>
 <dt>4.</dt>
@@ -306,8 +304,7 @@ stable/package_esp8266com_index.json
 <dl>
 <dt>1.</dt>
 <dd><p>Auf</p>
-<pre><code>https://github.com/
-EvilWatermelon/SmartLab
+<pre><code>https://github.com/EvilWatermelon/SmartLab
  </code></pre>
 <p>sind alle Programme zur Verfügung gestellt, die für dieses Projekt benötigt werden.</p>
 </dd>
@@ -316,10 +313,7 @@ EvilWatermelon/SmartLab
 </dd>
 <dt>3.</dt>
 <dd><p>Über den Befehl</p>
-<pre><code>git clone 
-https://github.com/
-EvilWatermelon/SmartLab.git
- </code></pre>
+<pre><code>git clone https://github.com/EvilWatermelon/SmartLab.git</code></pre>
 <p>können die entsprechenden Programme geklont werden. Wahlweise kann das Projekt auch als ZIP heruntergeladen werden.</p>
 </dd>
 <dt>4.</dt>
@@ -334,11 +328,8 @@ EvilWatermelon/SmartLab.git
 </dd>
 <dt>2.</dt>
 <dd><p>Um NodeJs zu installieren müssen nun die folgenden Befehle eingegeben werden:</p>
-<pre><code>curl -sL https://deb.nodesource.com/
-setup_10.x | sudo -E bash -
- </code></pre>
-<pre><code>sudo apt-get install -y nodejs
- </code></pre>
+<pre><code>curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -</code></pre>
+<pre><code>sudo apt-get install -y nodejs</code></pre>
 </dd>
 <dt>3.</dt>
 <dd><p>Um den Webserver auf dem Raspberry Pi auszuführen ist es nötig, das Projekt in einen Ordner auf dem Raspberry Pi zu klonen. Wurde dies durchgeführt, kann der folgende Befehl über das Terminal im Ordner ausgeführt werden:</p>
@@ -348,9 +339,7 @@ setup_10.x | sudo -E bash -
 </dd>
 <dt>4.</dt>
 <dd><p>Da es bei dem Port 80 zu Problemen bei Aufrufen des Servers gibt, ist eine Portweiterleitung nötig, welche mit dem folgendem Befehl eingerichtet wird:</p>
-<pre><code>sudo iptables -t nat -A PREROUTING 
--p tcp --dport 80 -j REDIRECT 
---to-port 8080</code></pre>
+<pre><code>sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080</code></pre>
 </dd>
 <dt>5.</dt>
 <dd><p>Sobald die Installation abgeschlossen ist, kann mit dem Befehl:</p>
@@ -363,12 +352,10 @@ setup_10.x | sudo -E bash -
 <dl>
 <dt>1.</dt>
 <dd><p>Um den Sonoff 4CH zu programmieren wird ein Programmierer für den ESP8285 benötigt. Für dieses Projekt wird der &quot;FTDI FTD1232&quot; empfohlen. Mit der ArduinoIDE kann das entsprechende Programm, welches im folgenden Git Repository zu finden ist, hochgeladen werden</p>
-<pre><code>https://github.com/
-EvilWatermelon/SmartLab</code></pre>
+<pre><code>https://github.com/EvilWatermelon/SmartLab</code></pre>
 </dd>
 <dt>2.</dt>
 <dd><p>Als erstes muss das Gehäuse des Sonoff 4CH geöffnet werden, um an die 5 Seriellen Pins zu kommen.</p>
-<p>[htb] <img src="Bild4" title="fig:" alt="Sonoff 4CH mit offenem Gehäuse" width="220" /></p>
 </dd>
 <dt>3.</dt>
 <dd><p>Die Pins werden dann mit dem ESP Programmierer verbunden. Hierbei sollte darauf geachtet werden, dass der Programmierer von 5V auf 3.3V umgestellt wurde. Ansonsten besteht die Gefahr, dass der eingebaute ESP kaputt geht und damit nicht mehr benutzbar ist. Die Verbindung mit dem Sonoff 4Ch ist in der folgenden Liste zu finden:</p>
